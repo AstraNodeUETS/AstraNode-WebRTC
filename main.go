@@ -50,13 +50,14 @@ func main() {
 			"    Ejecuta scripts/setup.ps1 para generarlo.", *certFile, *keyFile, err)
 	}
 
-	// Los celulares solo dan acceso a la camara en un contexto seguro (HTTPS) y
-	// el certificado debe cubrir la IP de la red local. Verificamos esto al
-	// arrancar para fallar con un mensaje claro en vez de con un error de camara
-	// incomprensible en cada celular.
-	if err := checkCertCoverage(*certFile); err != nil {
-		log.Printf("AVISO: %v", err)
-		log.Printf("       Regenera el certificado con scripts/setup.ps1")
+	// La comprobacion solo aplica cuando el navegador entra directamente al
+	// servidor. Con Cloudflare, el HTTPS publico termina en el tunnel y este
+	// conecta al origen local con --no-tls-verify.
+	if !*enableTunnel {
+		if err := checkCertCoverage(*certFile); err != nil {
+			log.Printf("AVISO: %v", err)
+			log.Printf("       Regenera el certificado con scripts/setup.ps1")
+		}
 	}
 
 	sub, err := fs.Sub(webFS, "web")
