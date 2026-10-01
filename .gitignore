@@ -1,0 +1,5 @@
+*.exe
+*.log
+certs/*.pem
+testtmp/
+node_modules/
