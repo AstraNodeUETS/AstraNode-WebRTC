@@ -6,6 +6,7 @@ varios navegadores en la red local.
 ## Requisitos
 
 - Go 1.27 o posterior.
+- `cloudflared` instalado y disponible en Windows para publicar el túnel.
 - Un navegador con acceso a cámara y micrófono.
 - Node.js 22 o posterior para ejecutar las pruebas de navegador.
 - Un certificado TLS cuyo SAN incluya la IP con la que se conectarán los
@@ -28,6 +29,23 @@ herramienta como `mkcert` e incluye la IP de la red local en el certificado.
 
 ```powershell
 go run .
+```
+
+Por defecto, el servidor inicia también un Quick Tunnel de Cloudflare y
+muestra las URLs públicas `/panel` y `/join`. El iPhone solo necesita abrir la
+URL `/join` en Safari; no requiere instalar Tailscale ni otra aplicación.
+
+El Quick Tunnel es temporal y su URL cambia cada vez que se reinicia el
+servidor. Para trabajar sin túnel y mostrar las URLs locales:
+
+```powershell
+go run . -tunnel=false
+```
+
+Si `cloudflared` no está en el `PATH`, indica su ruta explícitamente:
+
+```powershell
+go run . -cloudflared "C:\Program Files (x86)\cloudflared\cloudflared.exe"
 ```
 
 También se pueden cambiar la dirección y las rutas TLS:
