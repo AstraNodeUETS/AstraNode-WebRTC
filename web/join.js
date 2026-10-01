@@ -14,6 +14,7 @@
     previewEmpty: document.getElementById("previewEmpty"),
     status: document.getElementById("status"),
     toggleCam: document.getElementById("toggleCam"),
+    camera: document.getElementById("camera"),
     go: document.getElementById("go"),
     hint: document.getElementById("hint")
   };
@@ -31,6 +32,7 @@
   var pc = null;
   var stream = null;
   var publishing = false;
+  var connecting = false;
   var camOn = false;
 
   // Un telefono que se apaga deja de enviar video. WakeLock evita que la
@@ -56,7 +58,7 @@
         width: { ideal: p.width },
         height: { ideal: p.height },
         frameRate: { ideal: p.frameRate },
-        facingMode: "user"
+        facingMode: { ideal: el.camera.value }
       }
     };
   }
@@ -67,6 +69,7 @@
       .then(function (s) {
         stream = s;
         el.preview.srcObject = s;
+        el.preview.dataset.camera = el.camera.value;
         camOn = true;
         el.previewEmpty.style.display = "none";
         el.toggleCam.disabled = false;
@@ -94,6 +97,7 @@
     el.previewEmpty.style.display = "flex";
     el.toggleCam.textContent = "Encender camara";
     el.toggleCam.disabled = true;
+    el.camera.disabled = false;
     el.go.disabled = true;
     setStatus("Camara apagada", "idle");
   }
@@ -201,6 +205,8 @@
       })
       .then(function () {
         publishing = true;
+        connecting = false;
+        el.camera.disabled = true;
         el.go.textContent = "Conectado";
         el.go.disabled = true;
         setStatus("Transmitiendo", "live");
@@ -208,8 +214,20 @@
         requestWakeLock();
       })
       .catch(function (err) {
+        connecting = false;
+        publishing = false;
+        if (pc) {
+          pc.close();
+          pc = null;
+        }
+        if (ws) {
+          ws.close();
+          ws = null;
+        }
+        el.camera.disabled = false;
+        el.go.disabled = false;
         setStatus("Error de negociacion", "error");
-        setHint("No se pudo completar la negociacion: " + err.message);
+        setHint("No se pudo completar la negociacion: " + (err.message || err.name));
       });
   }
 
@@ -236,9 +254,7 @@
     }
 
     tr.direction = "sendonly";
-    return tr.sender.replaceTrack(videoTrack).then(function () {
-      return tr.sender.setStreams(stream ? [stream] : []);
-    });
+    return tr.sender.replaceTrack(videoTrack);
   }
 
   // WakeLock: mantener la pantalla encendida mientras se transmite.
@@ -263,14 +279,17 @@
   // ---- Eventos -----------------------------------------------------------
 
   el.go.addEventListener("click", function () {
-    if (publishing) {
+    if (publishing || connecting) {
       return;
     }
+    connecting = true;
+    el.go.disabled = true;
     setStatus("Conectando...", "pending");
-    if (!stream) {
-      startCamera();
-    }
-    connect();
+    var ready = stream ? Promise.resolve(stream) : startCamera();
+    ready.then(connect).catch(function () {
+      connecting = false;
+      el.go.disabled = false;
+    });
   });
 
   el.toggleCam.addEventListener("click", function () {
@@ -281,10 +300,17 @@
     }
   });
 
-  // Cambiar la calidad solo tiene efecto si la camara esta apagada; si esta
-  // encendida hay que reiniciar el track.
+  // Cambiar la calidad requiere reiniciar el track antes de conectar.
   el.res.addEventListener("change", function () {
-    if (!camOn) {
+    if (!camOn || publishing) {
+      return;
+    }
+    stopCamera();
+    startCamera();
+  });
+
+  el.camera.addEventListener("change", function () {
+    if (!camOn || publishing) {
       return;
     }
     stopCamera();

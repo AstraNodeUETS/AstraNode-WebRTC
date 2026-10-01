@@ -105,6 +105,9 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.preview[data-camera="user"] video {
   /* La camara frontal se ve al reves; los celulares lo hacen con esto. */
   transform: scaleX(-1);
 }
