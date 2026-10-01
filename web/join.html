@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#111">
+<title>AstraNode - Enviar video</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body class="phone">
+
+<header class="phone-head">
+  <h1>AstraNode</h1>
+  <p class="sub" id="sub">Preparando camara...</p>
+</header>
+
+<main class="phone-main">
+
+  <div class="preview">
+    <video id="preview" playsinline autoplay muted></video>
+    <div class="preview-empty" id="previewEmpty">
+      <span>La camara esta apagada</span>
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="name">Tu nombre</label>
+    <input id="name" type="text" placeholder="Celular 1" autocomplete="off" autocapitalize="off">
+  </div>
+
+  <div class="field">
+    <label for="res">Calidad</label>
+    <select id="res">
+      <option value="360">Baja - 360p (recomendada para 4 celulares)</option>
+      <option value="720" selected>Media - 720p</option>
+      <option value="1080">Alta - 1080p (consume mas bateria)</option>
+    </select>
+  </div>
+
+  <div class="status" id="status" data-state="idle">Sin conectar</div>
+
+  <div class="actions">
+    <button id="toggleCam" class="btn btn-ghost" disabled>Apagar camara</button>
+    <button id="go" class="btn btn-main" disabled>Conectar</button>
+  </div>
+
+  <p class="hint" id="hint">Presiona Conectar. El panel de control en el computador
+  mostrara este video automaticamente.</p>
+</main>
+
+<script src="/join.js"></script>
+</body>
+</html>

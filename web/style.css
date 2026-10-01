@@ -1,0 +1,331 @@
+/* AstraNode-WebRTC - estilos compartidos.
+   El telefono y el panel tienen necesidades opuestas: la pantalla del celular es
+   pequena y se usa con el dedo, la del panel es grande y se mira a distancia.
+   Por eso las dos bases compartidas son solo los colores. */
+
+:root {
+  --bg: #0d0f12;
+  --panel: #161a20;
+  --panel-2: #1e232b;
+  --line: #2a3038;
+  --text: #e6e9ee;
+  --muted: #8b95a5;
+  --live: #2ecc71;
+  --pending: #f1c40f;
+  --error: #e74c3c;
+  --accent: #4c8dff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.btn {
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-main {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.btn-ghost {
+  background: transparent;
+}
+
+.btn-sm {
+  padding: 6px 10px;
+  font-size: 12px;
+  border-radius: 8px;
+}
+
+/* ---- Celular ----------------------------------------------------------- */
+
+.phone {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 20px 18px 40px;
+}
+
+.phone-head h1 {
+  margin: 0;
+  font-size: 26px;
+  letter-spacing: -0.5px;
+}
+
+.sub {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.phone-main {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.preview {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.preview video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* La camara frontal se ve al reves; los celulares lo hacen con esto. */
+  transform: scaleX(-1);
+}
+
+.preview-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.field input,
+.field select {
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 16px; /* evita el zoom automatico de iOS al enfocar */
+  font-family: inherit;
+}
+
+.status {
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  text-align: center;
+}
+
+.status[data-state="ready"] {
+  border-color: var(--muted);
+}
+
+.status[data-state="pending"] {
+  border-color: var(--pending);
+  color: var(--pending);
+}
+
+.status[data-state="live"] {
+  border-color: var(--live);
+  color: var(--live);
+}
+
+.status[data-state="error"] {
+  border-color: var(--error);
+  color: var(--error);
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.actions .btn {
+  flex: 1;
+  padding: 14px;
+  font-size: 16px;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ---- Panel ------------------------------------------------------------- */
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+
+.panel-head h1 {
+  margin: 0;
+  font-size: 22px;
+  letter-spacing: -0.5px;
+}
+
+.head-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pill {
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.panel-main {
+  padding: 24px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 18px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.card video {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  background: #000;
+  display: block;
+}
+
+.card-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+}
+
+.card-name {
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+}
+
+.empty-inner {
+  max-width: 560px;
+  padding: 20px;
+}
+
+.empty h2 {
+  margin: 0 0 10px;
+  font-size: 20px;
+}
+
+.empty p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.join-url {
+  display: inline-block;
+  background: var(--panel-2);
+  border: 1px solid var(--accent);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-size: 16px;
+  cursor: pointer;
+  word-break: break-all;
+  margin: 8px 0 4px;
+}
+
+.empty-note {
+  font-size: 13px;
+}
+
+/* ---- Vista para OBS ---------------------------------------------------- */
+
+.viewer {
+  background: #000;
+  overflow: hidden;
+}
+
+.viewer video {
+  width: 100vw;
+  height: 100vh;
+  object-fit: contain;
+  display: block;
+}
+
+.viewer-wait {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 16px;
+  pointer-events: none;
+}

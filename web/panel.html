@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0d0f12">
+<title>AstraNode - Panel de control</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body class="panel">
+
+<header class="panel-head">
+  <div>
+    <h1>AstraNode</h1>
+    <p class="sub" id="sub">Panel de control</p>
+  </div>
+  <div class="head-right">
+    <span class="pill" id="count">0 fontes</span>
+    <a class="btn btn-ghost btn-sm" id="joinLink" href="/join" target="_blank">Abrir pagina del celular</a>
+  </div>
+</header>
+
+<main class="panel-main">
+  <div class="grid" id="grid"></div>
+
+  <div class="empty" id="empty">
+    <div class="empty-inner">
+      <h2>Ningun celular conectado</h2>
+      <p>Abre esta direccion en el celular que quieras conectar:</p>
+      <code class="join-url" id="joinUrl">-</code>
+      <p class="empty-note">El celular debe estar en la misma red WiFi que esta computadora.
+      La direccion debe empezar por <strong>https</strong>, si no el navegador no
+      permitira usar la camara.</p>
+    </div>
+  </div>
+</main>
+
+<script src="/panel.js"></script>
+</body>
+</html>
