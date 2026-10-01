@@ -117,7 +117,9 @@
   }
 
   function onOffer(m) {
-    var id = m.id;
+    // Las ofertas del servidor identifican al emisor dentro de "peer".
+    // Aceptar tambien "id" mantiene compatible el cliente con ofertas simples.
+    var id = m.id || (m.peer && m.peer.id);
     if (!id) {
       return;
     }

@@ -74,7 +74,8 @@
   }
 
   function onOffer(m) {
-    if (!m.id) {
+    var id = m.id || (m.peer && m.peer.id);
+    if (!id) {
       return;
     }
     pc = new RTCPeerConnection({ iceServers: [] });
@@ -98,7 +99,7 @@
         ws.send(
           JSON.stringify({
             type: "answer",
-            id: m.id,
+            id: id,
             sdp: pc.localDescription.sdp
           })
         );

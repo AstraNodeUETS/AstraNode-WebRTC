@@ -425,5 +425,5 @@ func (c *client) handleSubscribe(m *msg) error {
 	c.down[m.ID] = d
 	c.mu.Unlock()
 
-	return d.negotiate(c)
+	return d.negotiate(c, m.ID)
 }

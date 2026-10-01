@@ -201,7 +201,7 @@ func drainRTCP(sender *webrtc.RTPSender) {
 
 // negotiate completa la negociacion de un downstream: el servidor envia una
 // oferta al espectador y espera su respuesta.
-func (d *downstream) negotiate(peer *client) error {
+func (d *downstream) negotiate(peer *client, upstreamID string) error {
 	offer, err := d.pc.CreateOffer(nil)
 	if err != nil {
 		return err
@@ -219,7 +219,7 @@ func (d *downstream) negotiate(peer *client) error {
 	return peer.send(&msg{
 		Type: msgOffer,
 		SDP:  d.pc.LocalDescription().SDP,
-		Peer: peer.info(),
+		ID:   upstreamID,
 	})
 }
 
