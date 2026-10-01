@@ -95,7 +95,12 @@
     if (!id) {
       return;
     }
-    pc = new RTCPeerConnection({ iceServers: [] });
+    pc = new RTCPeerConnection({
+      iceServers: [
+        { urls: "stun:stun.cloudflare.com:3478" },
+        { urls: "stun:stun.l.google.com:19302" }
+      ]
+    });
 
     pc.ontrack = function (ev) {
       video.srcObject = ev.streams[0] || new MediaStream([ev.track]);

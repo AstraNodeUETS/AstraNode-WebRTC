@@ -62,7 +62,12 @@ func newUpstream(peer *client) (*upstream, error) {
 		webrtc.WithInterceptorRegistry(registry),
 	)
 
-	pc, err := api.NewPeerConnection(webrtc.Configuration{})
+	pc, err := api.NewPeerConnection(webrtc.Configuration{
+		ICEServers: []webrtc.ICEServer{{URLs: []string{
+			"stun:stun.cloudflare.com:3478",
+			"stun:stun.l.google.com:19302",
+		}}},
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -170,7 +175,12 @@ func newDownstream(up *upstream, peer *client) (*downstream, error) {
 		return nil, errors.New("el emisor todavia no tiene video")
 	}
 
-	pc, err := webrtc.NewPeerConnection(webrtc.Configuration{})
+	pc, err := webrtc.NewPeerConnection(webrtc.Configuration{
+		ICEServers: []webrtc.ICEServer{{URLs: []string{
+			"stun:stun.cloudflare.com:3478",
+			"stun:stun.l.google.com:19302",
+		}}},
+	})
 	if err != nil {
 		return nil, err
 	}

@@ -192,15 +192,24 @@
       return;
     }
     pc = new RTCPeerConnection({
-      iceServers: []
+      iceServers: [
+        { urls: "stun:stun.cloudflare.com:3478" },
+        { urls: "stun:stun.l.google.com:19302" }
+      ]
     });
 
     pc.onconnectionstatechange = function () {
-      if (pc.connectionState === "failed") {
+      if (pc.connectionState === "connected") {
+        setStatus("Transmitiendo", "live");
+        setHint("El panel ya deberia mostrar tu video.");
+      } else if (pc.connectionState === "failed") {
+        publishing = false;
+        el.go.disabled = false;
+        el.go.textContent = "Reconectar";
         setStatus("Conexion fallida", "error");
         setHint(
-          "No se pudo establecer la conexion directa. " +
-          "Revisa que el celular y el computador esten en la misma red WiFi."
+          "La señalizacion funciona, pero la red no permite transportar el video. " +
+          "Configura un servidor TURN o conecta ambos dispositivos a la misma red."
         );
       }
     };
@@ -238,8 +247,8 @@
         el.camera.disabled = true;
         el.go.textContent = "Conectado";
         el.go.disabled = true;
-        setStatus("Transmitiendo", "live");
-        setHint("El panel ya deberia mostrar tu video. Puedes dejar esta pagina abierta.");
+        setStatus("Conectando video...", "pending");
+        setHint("Esperando que ICE establezca la ruta de video.");
         requestWakeLock();
       })
       .catch(function (err) {
