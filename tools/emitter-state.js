@@ -120,9 +120,9 @@ async function main() {
     return { goWasDisabled: wasDisabled, clicked: true };
   })()`));
 
-  await sleep(5000);
+  await sleep(10000);
 
-  console.log("\n=== 3. estado tras 5s ===");
+  console.log("\n=== 3. estado tras 10s ===");
   console.log(await ev(`(function(){
     var v = document.getElementById('preview');
     return {

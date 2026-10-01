@@ -117,7 +117,17 @@ async function main() {
       flatten: true,
     });
     const session = a.sessionId;
+    await send("Page.enable", {}, session);
     await send("Runtime.enable", {}, session);
+    await send(
+      "Runtime.evaluate",
+      {
+        expression:
+          "new Promise(function(resolve) { if (document.readyState !== 'loading') resolve(true); else document.addEventListener('DOMContentLoaded', function() { resolve(true); }, { once: true }); })",
+        awaitPromise: true,
+      },
+      session
+    );
     return session;
   }
 
@@ -140,6 +150,10 @@ async function main() {
 
   // El emisor es una pagina de celular: hay que pulsar "Conectar" a mano.
   console.log("presionando Conectar en la pagina del emisor...");
+  await evalJS(
+    emisor,
+    "new Promise(function(resolve) { function ready() { var button = document.getElementById('go'); if (button && !button.disabled) resolve(true); else setTimeout(ready, 100); } ready(); })"
+  );
   await evalJS(
     emisor,
     `document.getElementById('name').value='probe-phone';

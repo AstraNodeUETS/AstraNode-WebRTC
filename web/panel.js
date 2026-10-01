@@ -29,6 +29,23 @@
     el.sub.textContent = text;
   }
 
+  function waitForIceGathering(connection, timeoutMs) {
+    if (connection.iceGatheringState === "complete") {
+      return Promise.resolve();
+    }
+    return new Promise(function (resolve) {
+      var timer = setTimeout(resolve, timeoutMs || 5000);
+      function onStateChange() {
+        if (connection.iceGatheringState === "complete") {
+          connection.removeEventListener("icegatheringstatechange", onStateChange);
+          clearTimeout(timer);
+          resolve();
+        }
+      }
+      connection.addEventListener("icegatheringstatechange", onStateChange);
+    });
+  }
+
   // ---- Tarjetas ----------------------------------------------------------
 
   function createTile(peer) {
@@ -151,6 +168,9 @@
       })
       .then(function (answer) {
         return pc.setLocalDescription(answer);
+      })
+      .then(function () {
+        return waitForIceGathering(pc);
       })
       .then(function () {
         ws.send(

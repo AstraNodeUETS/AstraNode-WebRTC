@@ -48,6 +48,23 @@
     el.hint.textContent = text;
   }
 
+  function waitForIceGathering(connection, timeoutMs) {
+    if (connection.iceGatheringState === "complete") {
+      return Promise.resolve();
+    }
+    return new Promise(function (resolve) {
+      var timer = setTimeout(resolve, timeoutMs || 5000);
+      function onStateChange() {
+        if (connection.iceGatheringState === "complete") {
+          connection.removeEventListener("icegatheringstatechange", onStateChange);
+          clearTimeout(timer);
+          resolve();
+        }
+      }
+      connection.addEventListener("icegatheringstatechange", onStateChange);
+    });
+  }
+
   // ---- Camara -------------------------------------------------------------
 
   function constraints() {
@@ -175,7 +192,7 @@
       return;
     }
     pc = new RTCPeerConnection({
-      iceServers: [] // en la red local no hace falta STUN ni TURN
+      iceServers: []
     });
 
     pc.onconnectionstatechange = function () {
@@ -204,6 +221,18 @@
         return pc.setLocalDescription(answer);
       })
       .then(function () {
+        return waitForIceGathering(pc);
+      })
+      .then(function () {
+        if (!ws || ws.readyState !== WebSocket.OPEN) {
+          throw new Error("el servidor cerro la senalizacion");
+        }
+        ws.send(
+          JSON.stringify({
+            type: "answer",
+            sdp: pc.localDescription.sdp
+          })
+        );
         publishing = true;
         connecting = false;
         el.camera.disabled = true;
